@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hanuman Chalisa – Pronunciation Practice</title>
+<style>
+:root{--saffron:#e87922;--ink:#29231f;--muted:#746b64;--paper:#fffaf3;--line:#eadfd2;--green:#18794e;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#fff5e8,#fffdf9 55%,#fff1df);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Noto Sans Devanagari","Nirmala UI",sans-serif}
+main{max-width:980px;margin:28px auto;padding:0 16px 40px}.top{text-align:center;margin-bottom:22px}.om{font-size:14px;color:var(--saffron);letter-spacing:.14em;font-weight:700}.top h1{font-size:clamp(27px,5vw,42px);margin:5px 0;color:#8e3d12}.top p{color:var(--muted);margin:0}
+.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 8px 30px #713b1010;margin:14px 0}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}.controls{display:flex;gap:9px;flex-wrap:wrap}
+button,select{border:1px solid var(--line);border-radius:12px;padding:11px 15px;font:inherit;background:white;color:var(--ink)}
+button{cursor:pointer;font-weight:650}button.primary{background:var(--saffron);color:white;border-color:var(--saffron)}button:disabled{opacity:.45;cursor:not-allowed}
+.status{font-size:14px;color:var(--muted)}.progress{height:8px;background:#f2e8dd;border-radius:20px;overflow:hidden;margin:14px 0 5px}.bar{height:100%;width:0;background:var(--saffron);transition:width .2s}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.col{border:1px solid var(--line);border-radius:16px;padding:16px;min-height:190px;background:#fffdfa}
+.col h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 13px}
+.original{font-size:clamp(21px,3vw,27px);line-height:1.9;color:#8e3d12;font-weight:650}
+.words{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}.word{padding:5px 8px;border-radius:8px;background:#f5f1ec;font-size:20px}.word.good{background:#e6f5ec;color:var(--green)}.word.bad{background:#fde8e7;color:var(--red);text-decoration:underline wavy}.word.pending{background:#fff0d9;color:#99500c}
+.feedback{margin-top:14px;padding:13px 15px;border-radius:12px;background:#f7f3ee;color:var(--muted)}.feedback.good{background:#eaf7ef;color:var(--green)}.feedback.bad{background:#fff0ef;color:var(--red)}
+.mic{display:flex;align-items:center;gap:12px}.dot{width:10px;height:10px;border-radius:50%;background:#aaa}.dot.live{background:#e04438;box-shadow:0 0 0 6px #e0443820;animation:pulse 1.2s infinite}@keyframes pulse{50%{box-shadow:0 0 0 10px #e0443808}}
+.transcript{font-size:20px;min-height:34px;word-break:break-word}.small{font-size:13px;color:var(--muted)}.line-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}.notice{font-size:13px;color:var(--muted);margin-top:15px}.all-lines{display:none;margin-top:12px}.all-lines.show{display:block}.all-lines button{display:block;width:100%;text-align:left;margin:6px 0;background:#fffaf5}.all-lines button.active{border-color:var(--saffron);background:#fff1df}
+@media(max-width:650px){.cols{grid-template-columns:1fr}.panel{padding:15px}.col{min-height:140px}.toolbar{align-items:flex-start}}
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <div class="om">॥ श्री राम जय राम जय जय राम ॥</div>
+    <h1>श्री हनुमान चालीसा</h1>
+    <p>Read each line aloud and practise at your own pace</p>
+  </header>
+
+  <section class="panel">
+    <div class="toolbar">
+      <div><strong id="lineCount">Line 1 of 46</strong><div class="status" id="status">Ready when you are</div></div>
+      <div class="controls">
+        <select id="speed" aria-label="Reading pace"><option value="manual">Manual pace</option><option value="normal">Auto next line (normal)</option></select>
+        <button id="start" class="primary">🎙 Start listening</button>
+        <button id="stop" disabled>Stop</button>
+      </div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="small" id="progressText">0 of 46 lines completed</div>
+  </section>
+
+  <section class="panel">
+    <div class="cols">
+      <div class="col">
+        <h2>Left · Original Hanuman Chalisa</h2>
+        <div class="original" id="original"></div>
+      </div>
+      <div class="col">
+        <h2>Right · What you said</h2>
+        <div class="transcript" id="transcript">Your recognized words will appear here…</div>
+        <div class="words" id="wordCompare"></div>
+      </div>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite">Press “Start listening” and allow microphone access. Recite the displayed line clearly.</div>
+    <div class="line-nav">
+      <button id="prev">← Previous</button>
+      <span class="small" id="lineState">Waiting to practise</span>
+      <button id="next">Next line →</button>
+    </div>
+    <div class="notice">Speech recognition is provided by your browser. It checks the words the browser recognizes; it cannot reliably judge exact devotional pronunciation, accent, pitch, or every syllable. Use a quiet place and speak one line at a time.</div>
+  </section>
+  <section class="panel">
+    <div class="toolbar">
+      <strong>Choose a line</strong><button id="toggleList">Show all lines</button>
+    </div>
+    <div class="all-lines" id="allLines"></div>
+  </section>
+  <p class="notice">Best in Google Chrome with an internet connection. Microphone permission is required. On Android, open this page in Chrome. If opened as a local file and microphone access is blocked, run it from a secure HTTPS host or a local web server.</p>
+</main>
+<script>
+const verses = [
+"श्रीगुरु चरन सरोज रज। निज मनु मुकुरु सुधारि॥",
+"बरनऊँ रघुबर बिमल जसु। जो दायकु फल चारि॥",
+"बुद्धिहीन तनु जानिके। सुमिरौं पवन-कुमार॥",
+"बल बुद्धि विद्या देहु मोहिं। हरहु कलेस बिकार॥",
+"जय हनुमान ज्ञान गुन सागर। जय कपीस तिहुँ लोक उजागर॥",
+"राम दूत अतुलित बल धामा। अंजनि-पुत्र पवनसुत नामा॥",
+"महाबीर बिक्रम बजरंगी। कुमति निवार सुमति के संगी॥",
+"कंचन बरन बिराज सुबेसा। कानन कुंडल कुंचित केसा॥",
+"हाथ बज्र औ ध्वजा बिराजै। काँधे मूँज जनेऊ साजै॥",
+"शंकर सुवन केसरी नंदन। तेज प्रताप महा जग वंदन॥",
+"विद्यावान गुनी अति चातुर। राम काज करिबे को आतुर॥",
+"प्रभु चरित्र सुनिबे को रसिया। राम लखन सीता मन बसिया॥",
+"सूक्ष्म रूप धरि सियहिं दिखावा। बिकट रूप धरि लंक जरावा॥",
+"भीम रूप धरि असुर सँहारे। रामचंद्र के काज सँवारे॥",
+"लाय सजीवन लखन जियाये। श्री रघुबीर हरषि उर लाये॥",
+"रघुपति कीन्ही बहुत बड़ाई। तुम मम प्रिय भरतहि सम भाई॥",
+"सहस बदन तुम्हरो जस गावैं। अस कहि श्रीपति कंठ लगावैं॥",
+"सनकादिक ब्रह्मादि मुनीसा। नारद सारद सहित अहीसा॥",
+"जम कुबेर दिगपाल जहाँ ते। कवि कोविद कहि सके कहाँ ते॥",
+"तुम उपकार सुग्रीवहिं कीन्हा। राम मिलाय राज पद दीन्हा॥",
+"तुम्हरो मंत्र विभीषण माना। लंकेश्वर भए सब जग जाना॥",
+"जुग सहस्र जोजन पर भानू। लील्यो ताहि मधुर फल जानू॥",
+"प्रभु मुद्रिका मेलि मुख माहीं। जलधि लाँघि गये अचरज नाहीं॥",
+"दुर्गम काज जगत के जेते। सुगम अनुग्रह तुम्हरे तेते॥",
+"राम दुआरे तुम रखवारे। होत न आज्ञा बिनु पैसारे॥",
+"सब सुख लहै तुम्हारी सरना। तुम रक्षक काहू को डरना॥",
+"आपन तेज सम्हारो आपै। तीनों लोक हाँक तें काँपै॥",
+"भूत पिशाच निकट नहिं आवै। महाबीर जब नाम सुनावै॥",
+"नासै रोग हरै सब पीरा। जपत निरंतर हनुमत बीरा॥",
+"संकट तें हनुमान छुड़ावै। मन क्रम वचन ध्यान जो लावै॥",
+"सब पर राम तपस्वी राजा। तिन के काज सकल तुम साजा॥",
+"और मनोरथ जो कोई लावै। सोइ अमित जीवन फल पावै॥",
+"चारों जुग परताप तुम्हारा। है परसिद्ध जगत उजियारा॥",
+"साधु संत के तुम रखवारे। असुर निकंदन राम दुलारे॥",
+"अष्ट सिद्धि नौ निधि के दाता। अस बर दीन जानकी माता॥",
+"राम रसायन तुम्हरे पासा। सदा रहो रघुपति के दासा॥",
+"तुम्हरे भजन राम को पावै। जनम जनम के दुख बिसरावै॥",
+"अंत काल रघुबर पुर जाई। जहाँ जन्म हरि-भक्त कहाई॥",
+"और देवता चित्त न धरई। हनुमत सेइ सर्व सुख करई॥",
+"संकट कटै मिटै सब पीरा। जो सुमिरै हनुमत बलबीरा॥",
+"जय जय जय हनुमान गोसाईं। कृपा करहु गुरुदेव की नाईं॥",
+"जो सत बार पाठ कर कोई। छूटहि बंदि महा सुख होई॥",
+"जो यह पढ़ै हनुमान चालीसा। होय सिद्धि साखी गौरीसा॥",
+"तुलसीदास सदा हरि चेरा। कीजै नाथ हृदय महँ डेरा॥",
+"पवनतनय संकट हरन। मंगल मूरति रूप॥",
+"राम लखन सीता सहित। हृदय बसहु सुर भूप॥"
+];
+// 40 practice units: opening doha + 40 chaupais are commonly grouped differently; display the 40 selected reading units.
+let idx=0, completed=new Set(), recognition=null, listening=false, lastFinal="";
+const $=id=>document.getElementById(id);
+function tokens(s){return s.replace(/[।॥,;:!?]/g,"").trim().split(/\s+/).filter(Boolean)}
+function norm(s){return s.normalize("NFC").replace(/[।॥,;:!?।]/g,"").replace(/[ँं]/g,"ं").replace(/\s+/g," ").trim().toLowerCase()}
+function render(){
+ const line=verses[idx]; $("original").textContent=line;
+ $("lineCount").textContent=`Line ${idx+1} of ${verses.length}`;
+ $("bar").style.width=`${completed.size/verses.length*100}%`;
+ $("progressText").textContent=`${completed.size} of ${verses.length} lines completed`;
+ $("lineState").textContent=completed.has(idx)?"✓ Line completed":"Waiting to practise";
+ $("prev").disabled=idx===0;$("next").disabled=idx===verses.length-1;
+ $("transcript").textContent="Your recognized words will appear here…";
+ $("wordCompare").innerHTML="";
+ $("feedback").className="feedback";
+ $("feedback").textContent="Press “Start listening” and recite the displayed line clearly.";
+}
+function compare(spoken){
+ const expected=tokens(verses[idx]), said=tokens(spoken);
+ $("transcript").textContent=spoken;
+ const normExpected=expected.map(norm), normSaid=said.map(norm);
+ let firstWrong=-1;
+ for(let i=0;i<Math.min(normExpected.length,normSaid.length);i++){if(normExpected[i]!==normSaid[i]){firstWrong=i;break}}
+ const wrap=$("wordCompare");wrap.innerHTML="";
+ expected.forEach((w,i)=>{
+  const el=document.createElement("span");el.className="word";
+  if(i<normSaid.length) el.classList.add(normExpected[i]===normSaid[i]?"good":"bad");
+  else el.classList.add("pending");
+  el.textContent=w;wrap.appendChild(el);
+ });
+ if(firstWrong>=0){
+  $("feedback").className="feedback bad";
+  $("feedback").textContent=`Please repeat from “${expected[firstWrong]}”. Browser heard “${said[firstWrong]}”.`;
+  $("lineState").textContent="Correction needed";
+ }else if(normSaid.length>=normExpected.length){
+  const same=normExpected.every((w,i)=>w===normSaid[i]);
+  if(same){
+   completed.add(idx);$("feedback").className="feedback good";
+   $("feedback").textContent="✓ The recognized words match this line. Well done!";
+   $("lineState").textContent="✓ Line completed";
+   $("bar").style.width=`${completed.size/verses.length*100}%`;
+   $("progressText").textContent=`${completed.size} of ${verses.length} lines completed`;
+   if($("speed").value==="normal" && idx<verses.length-1){
+    setTimeout(()=>{if(listening && idx<verses.length-1){idx++;lastFinal="";render()}},1700);
+   }
+  }
+ }else{
+  $("feedback").className="feedback";
+  $("feedback").textContent=`Good start. ${normExpected.length-normSaid.length} word(s) still to be recognized. Continue or repeat the line.`;
+ }
+}
+function start(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){$("feedback").className="feedback bad";$("feedback").textContent="Speech recognition is not supported in this browser. Please use Google Chrome.";return}
+ if(recognition){try{recognition.stop()}catch(e){}}
+ recognition=new SR();recognition.lang="hi-IN";recognition.continuous=true;recognition.interimResults=true;recognition.maxAlternatives=1;
+ lastFinal="";listening=true;
+ $("dot")?.classList.add("live");$("status").textContent="Listening… speak the displayed line";
+ $("start").disabled=true;$("stop").disabled=false;
+ recognition.onresult=e=>{
+  let interim="", finalText="";
+  for(let i=e.resultIndex;i<e.results.length;i++){
+   const t=e.results[i][0].transcript;
+   if(e.results[i].isFinal) finalText+=t+" "; else interim+=t;
+  }
+  if(finalText){lastFinal=(lastFinal+" "+finalText).trim();compare(lastFinal)}
+  else if(interim){$("transcript").textContent=(lastFinal+" "+interim).trim()}
+ };
+ recognition.onerror=e=>{$("status").textContent=`Recognition issue: ${e.error}. Check microphone permission and try again.`};
+ recognition.onend=()=>{if(listening){try{recognition.start()}catch(e){}}};
+ try{recognition.start()}catch(e){listening=false;$("status").textContent="Could not start microphone. Try again."}
+}
+function stop(){listening=false;if(recognition){recognition.onend=null;try{recognition.stop()}catch(e){}}$("status").textContent="Stopped";$("start").disabled=false;$("stop").disabled=true}
+$("start").onclick=start;$("stop").onclick=stop;
+$("prev").onclick=()=>{stop();idx=Math.max(0,idx-1);render()};
+$("next").onclick=()=>{stop();idx=Math.min(verses.length-1,idx+1);render()};
+$("toggleList").onclick=()=>{$("allLines").classList.toggle("show");$("toggleList").textContent=$("allLines").classList.contains("show")?"Hide all lines":"Show all lines"};
+verses.forEach((v,i)=>{let b=document.createElement("button");b.textContent=`${i+1}. ${v}`;b.onclick=()=>{stop();idx=i;render();document.querySelectorAll("#allLines button").forEach(x=>x.classList.remove("active"));b.classList.add("active")};$("allLines").appendChild(b)});
+render();
+</script>
+</body>
+</html>
